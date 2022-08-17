@@ -34,6 +34,10 @@ public class Nasa {
         return hdurl;
     }
 
+    public String getMedia_type() {
+        return media_type;
+    }
+
     public String getUrl() {
         return url;
     }
