@@ -22,8 +22,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setUserAgent("My test service")
+        CloseableHttpClient httpClient = HttpClientBuilder.create().setUserAgent("My test service")
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setConnectTimeout(5000)
                         .setSocketTimeout(30000)
@@ -34,22 +33,19 @@ public class Main {
         HttpGet request = new HttpGet(REMOTE_SERVICE_URL);
         request.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
 
-        try {
-            CloseableHttpResponse response = httpClient.execute(request);
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
 //            String body = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
 //            System.out.println(body);
             mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); //Когда требуется создать массив = 1
-            List<Nasa> nasaList = mapper.readValue(response.getEntity().getContent(),
-                    new TypeReference<>() {
-                    });
+            List<Nasa> nasaList = mapper.readValue(response.getEntity().getContent(), new TypeReference<>() {
+            });
 
             String url = null;
             for (Nasa nasa : nasaList) {
                 if (nasa.getMedia_type().equals("image")) {
                     url = nasa.getHdurl();
                     System.out.println("Hdurl: " + url);
-                } else
-                    System.out.println("По ссылке нет изображения!");
+                } else System.out.println("По ссылке нет изображения!");
             }
 //            HttpUriRequest request2 = new HttpGet(url);
 //            CloseableHttpResponse response2 = httpClient.execute(request2);
@@ -59,6 +55,7 @@ public class Main {
             BufferedImage img = ImageIO.read(connection);
             File bw = new File("src/main/resources/" + fileName[fileName.length - 1]);
             ImageIO.write(img, "jpg", bw);
+
 
             httpClient.close();
         } catch (IOException e) {
