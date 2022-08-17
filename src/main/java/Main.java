@@ -5,12 +5,14 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -42,9 +44,21 @@ public class Main {
                     });
 
 //            nasaList.forEach(System.out::println);
+
+            String url = null;
             for (Nasa nasa : nasaList) {
-                System.out.println("Hdurl: " + nasa.getHdurl());
+                url = nasa.getHdurl();
+                System.out.println("Hdurl: " + url);
             }
+
+            HttpUriRequest request2 = new HttpGet(url);
+            CloseableHttpResponse response2 = httpClient.execute(request2);
+
+
+//            //проверка чтения ссылки
+//            String body2 = (new String(response2.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8));
+//            System.out.println(body2);
+
 
             httpClient.close();
         } catch (IOException e) {
